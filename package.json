@@ -1,0 +1,19 @@
+{
+  "name": "decimal-number",
+  "version": "1.0.0",
+  "description": "Long numbers calculation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lexxus/decimal-number.git"
+  },
+  "author": "Oleksij Teterin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lexxus/decimal-number/issues"
+  },
+  "homepage": "https://github.com/Lexxus/decimal-number#readme"
+}
