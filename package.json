@@ -4,7 +4,7 @@
   "description": "Long numbers calculation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/Lexxus/decimal-number/issues"
   },
-  "homepage": "https://github.com/Lexxus/decimal-number#readme"
+  "homepage": "https://github.com/Lexxus/decimal-number#readme",
+  "devDependencies": {
+    "eslint": "^3.13.0",
+    "mocha": "^3.2.0"
+  }
 }
