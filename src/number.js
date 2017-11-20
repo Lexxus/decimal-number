@@ -249,53 +249,81 @@
     var frac2Len = numer.hasFraction ? numer.fraction.length : 0;
     var fracLen = frac1Len + frac2Len;
     var trailZeros = '';
-    var i, mulRes, mulResult, intLen;
+    var i, n, mulRes, mulResult, integer, intLen;
 
     function mul1(numStr, digit) {
       var num1 = parseInt(digit, 10);
-      var bit = false;
-      var j, res, result;
+      var bit = 0;
+      var j, nj, res, result, resStr;
 
-      if (numStr === '0' || !num1) {
+      if (numStr === '0') {
         result = '0';
-      } else if (num1 === 1) {
-        result = numStr;
       } else {
         result = '';
         for (j = numStr.length - 1; j >= 0; j--) {
-          res = numStr[j] * num1;
-          bit && res++;
-          bit = res > 9;
-          if (bit) {
-            res -= 10;
+          nj = numStr[j];
+          if (nj === '0') {
+            res = bit;
+            bit = 0;
+          } else {
+            res = numStr[j] * num1;
+            if (bit) {
+              res += bit;
+            }
+            resStr = res.toString();
+            if (res > 9) {
+              bit = +resStr[0];
+              res = resStr[1];
+            } else {
+              bit = 0;
+              res = resStr;
+            }
           }
           result = res + result;
         }
       }
+      
+      if (bit) {
+        result = resStr[0] + result;
+      }
 
       return result;
     }
-    
+
     for (i = numStr2.length - 1; i >= 0; i--) {
-      mulRes = mul1(numStr1, numStr2[i]);
-      mulRes += trailZeros;
-      if (!mulResult) {
-        mulResult = new DecimalNumber(mulRes);
-      } else {
-        mulResult.add(mulRes);
+      n = numStr2[i];
+      if (n !== '0') {
+        if (n === '1') {
+          mulRes = numStr1;
+        } else {
+          mulRes = mul1(numStr1, n);
+        }
+        mulRes += trailZeros;
+
+        if (!mulResult) {
+          mulResult = new DecimalNumber(mulRes);
+        } else {
+          mulResult.add(mulRes);
+        }
       }
       trailZeros += '0';
     }
-    
-    intLen = mulResult.integer.length - fracLen;
-    
+    if (!mulResult) {
+      integer = '0';
+    } else if (mulResult.isChanged) {
+      integer = mulResult.toString(true);
+    } else {
+      integer = mulResult.integer;
+    }
+    intLen = integer.length - fracLen;
+
     if (intLen <= 0) {
       this.integer = '0';
       this.hasInteger = false;
       this.integerChunks.length = 0;
     } else {
       this.hasInteger = true;
-      this.integer = mulResult.integer.substr(0, intLen);
+      this.integer = integer.substr(0, intLen);
       this.integerChunks = DecimalNumber.splitValue(this.integer);
     }
     if (!fracLen) {
@@ -305,9 +333,9 @@
     } else {
       this.hasFraction = true;
       if (intLen > 0) {
-        this.fraction = mulResult.integer.substr(intLen);
+        this.fraction = integer.substr(intLen);
       } else {
-        this.fraction = mulResult.integer;
+        this.fraction = integer;
         if (intLen < 0) {
           if (this.fraction.padStart) {
             this.fraction = this.fraction.padStart(fracLen, '0');
@@ -319,7 +347,7 @@
       this.fractionChunks = DecimalNumber.splitValue(this.fraction, true);
     }
     this.isNegative = this.isNegative !== numer.isNegative;
-    
+
     return this;
   };
 
